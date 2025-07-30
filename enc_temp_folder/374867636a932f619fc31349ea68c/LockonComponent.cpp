@@ -53,29 +53,6 @@ void ULockonComponent::StartLockon(float Radius)
 
 }
 
-void ULockonComponent::EndLockon()
-{
-	CurrentTargetActor =nullptr;
-	
-	MovementComp->bOrientRotationToMovement = true;
-	MovementComp->bUseControllerDesiredRotation = false;
-	SpringArmComp->TargetOffset = FVector::ZeroVector;
-
-	Controller->ResetIgnoreLookInput();
-}
-
-void ULockonComponent::ToggleLockon(float Radius)
-{
-	if (IsValid(CurrentTargetActor))
-	{
-		EndLockon();
-	}
-	else
-	{
-		StartLockon(Radius);
-	}
-}
-
 
 // Called when the game starts
 void ULockonComponent::BeginPlay()
@@ -102,7 +79,7 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	if (!IsValid(CurrentTargetActor)) { return; }
 	FVector CurrentLocation = OwnerRef->GetActorLocation();
 	FVector TargetLocation = CurrentTargetActor->GetActorLocation();
-	TargetLocation.Z -= 125;
+
 	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(
 		CurrentLocation, TargetLocation
 	);

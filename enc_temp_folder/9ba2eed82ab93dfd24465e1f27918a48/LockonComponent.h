@@ -6,22 +6,34 @@
 #include "Components/ActorComponent.h"
 #include "LockonComponent.generated.h"
 
+class UCharacterMovementComponent;
+class USpringArmComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VOIDSLASH_API ULockonComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	ACharacter* OwnerRef;
+
+	APlayerController* Controller;
+
+	UCharacterMovementComponent* MovementComp;
+
+	USpringArmComponent* SpringArmComp;
+
 public:	
 	// Sets default values for this component's properties
 	ULockonComponent();
 
-	UFUNCTION(BlueprintCallable)
-	void StartLockon();
+	AActor* CurrentTargetActor;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+	void StartLockon(float Radius);
 
 public:	
 	// Called every frame

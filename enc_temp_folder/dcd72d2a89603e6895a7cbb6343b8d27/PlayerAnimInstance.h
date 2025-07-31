@@ -17,10 +17,10 @@ class VOIDSLASH_API UPlayerAnimInstance : public UAnimInstance
 protected:
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	float CurrentSpeed{ 0.0f };
+	float CurrentVelocity{ 0.0f };
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateSpeed();
+	void UpdateVelocity();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bIsInCombat{ false };

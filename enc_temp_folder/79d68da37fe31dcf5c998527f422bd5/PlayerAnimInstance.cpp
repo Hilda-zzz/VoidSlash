@@ -3,7 +3,7 @@
 
 #include "Animations/PlayerAnimInstance.h"
 
-void UPlayerAnimInstance::UpdateSpeed()
+void UPlayerAnimInstance::UpdateVelocity()
 {
 	APawn* PawnRef{ TryGetPawnOwner() };
 	if (!IsValid(PawnRef))
@@ -11,7 +11,7 @@ void UPlayerAnimInstance::UpdateSpeed()
 		return;
 	}
 	FVector Velocity = PawnRef->GetVelocity();
-	CurrentSpeed = static_cast<float> (Velocity.Length());
+	CurrentVelocity = static_cast<float> (Velocity.Length());
 }
 
 void UPlayerAnimInstance::HandleUpdatedTarget(AActor* NewTargetActorRef)

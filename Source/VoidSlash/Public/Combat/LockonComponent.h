@@ -9,6 +9,14 @@
 class UCharacterMovementComponent;
 class USpringArmComponent;
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	FOnUpdateTargetSignature,
+	ULockonComponent,
+	OnUpdateTargetDelegate,
+	AActor*,
+	NewTargetActorRef
+);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VOIDSLASH_API ULockonComponent : public UActorComponent
 {
@@ -28,6 +36,9 @@ public:
 
 	AActor* CurrentTargetActor;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnUpdateTargetSignature OnUpdateTargetDelegate;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -37,6 +48,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleLockon(float Radius = 750.f);
+
+	UPROPERTY(EditAnywhere)
+	double BreakDistance = 1000;
 
 public:	
 	// Called every frame

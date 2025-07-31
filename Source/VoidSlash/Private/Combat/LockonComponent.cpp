@@ -6,6 +6,7 @@
 #include "VoidSlashCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Interfaces/Enemy.h"
 // Sets default values for this component's properties
 ULockonComponent::ULockonComponent()
 {
@@ -38,6 +39,7 @@ void ULockonComponent::StartLockon(float Radius)
 	);
 
 	if (!bHasFoundTarget) { return; }
+	if (!OutResult.GetActor()->Implements<UEnemy>()) { return; }  // Valid the interface
 
 	CurrentTargetActor = OutResult.GetActor();
 
@@ -46,6 +48,9 @@ void ULockonComponent::StartLockon(float Radius)
 	MovementComp->bUseControllerDesiredRotation = true;
 	SpringArmComp->TargetOffset = FVector{ 0.0,0.f,100.0 };
 
+	IEnemy::Execute_OnSelect(CurrentTargetActor);     // implement in blueprint in each enemy bpa
+	OnUpdateTargetDelegate.Broadcast(CurrentTargetActor);
+	//--------------------------------
 	UE_LOG(
 		LogTemp, Warning, TEXT("Lockon Started! Actor Detected: %s"),
 		*OutResult.GetActor()->GetName()
@@ -55,6 +60,8 @@ void ULockonComponent::StartLockon(float Radius)
 
 void ULockonComponent::EndLockon()
 {
+	IEnemy::Execute_OnDeselect(CurrentTargetActor);
+
 	CurrentTargetActor =nullptr;
 	
 	MovementComp->bOrientRotationToMovement = true;
@@ -62,6 +69,8 @@ void ULockonComponent::EndLockon()
 	SpringArmComp->TargetOffset = FVector::ZeroVector;
 
 	Controller->ResetIgnoreLookInput();
+
+	OnUpdateTargetDelegate.Broadcast(CurrentTargetActor);
 }
 
 void ULockonComponent::ToggleLockon(float Radius)
@@ -102,6 +111,16 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	if (!IsValid(CurrentTargetActor)) { return; }
 	FVector CurrentLocation = OwnerRef->GetActorLocation();
 	FVector TargetLocation = CurrentTargetActor->GetActorLocation();
+
+	double TargetDistance{
+		FVector::Distance(CurrentLocation,TargetLocation)
+	};
+	if (TargetDistance >= BreakDistance)
+	{
+		EndLockon();
+		return;
+	}
+
 	TargetLocation.Z -= 125;
 	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(
 		CurrentLocation, TargetLocation

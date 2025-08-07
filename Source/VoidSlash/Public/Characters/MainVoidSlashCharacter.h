@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "VoidSlashCharacter.h"
 #include "Interfaces/MainPlayer.h"
-
+#include "Interfaces/Fighter.h"
 #include "MainVoidSlashCharacter.generated.h"
 
 class UPlayerAnimInstance;
@@ -13,7 +13,7 @@ class UPlayerAnimInstance;
  * 
  */
 UCLASS()
-class VOIDSLASH_API AMainVoidSlashCharacter : public AVoidSlashCharacter, public IMainPlayer
+class VOIDSLASH_API AMainVoidSlashCharacter : public AVoidSlashCharacter, public IMainPlayer, public IFighter
 {
 	GENERATED_BODY()
 	
@@ -23,4 +23,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UPlayerAnimInstance* PlayerAnim;
+
+	virtual float GetDamage() override;
 };

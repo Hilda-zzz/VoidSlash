@@ -3,6 +3,13 @@
 #include "Combat/TraceComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Interfaces/Fighter.h"
+#include "Engine/DamageEvents.h"
+
+void UTraceComponent::HandleResetAttack()
+{
+	TargetToIgnore.Empty();
+}
 
 // Sets default values for this component's properties
 UTraceComponent::UTraceComponent()
@@ -28,6 +35,8 @@ void UTraceComponent::BeginPlay()
 void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (!bIsAttacking) return;
 
 	FVector StartSocketLocation{ SkeletalComp->GetSocketLocation(Start) };
 	FVector EndSocketLocation{ SkeletalComp->GetSocketLocation(End) };
@@ -72,13 +81,38 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		};
 		UKismetSystemLibrary::DrawDebugBox(
 			GetWorld(),
-			CenterPoint,
+			EndSocketLocation,
 			Box.GetExtent(),
 			bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red,
 			ShapeRotation.Rotator(),
 			1.0f,
 			2.0f
 		);
+	}
+
+	if (OutResults.Num() == 0) return;
+
+	float CharacterDamage{ 0.0f };
+	IFighter* FighterRef{ Cast<IFighter>(GetOwner()) };
+	if (FighterRef) {
+		CharacterDamage = FighterRef->GetDamage();
+	}
+	
+	FDamageEvent TargetAttackedEvent;
+	for (FHitResult const& Hit : OutResults)
+	{
+		AActor* TargetActor{ Hit.GetActor() };
+
+		if (TargetToIgnore.Contains(TargetActor)) continue;
+
+		TargetActor->TakeDamage(
+			CharacterDamage,
+			TargetAttackedEvent,
+			GetOwner()->GetInstigatorController(),
+			GetOwner()
+		);
+
+		TargetToIgnore.AddUnique(TargetActor);
 	}
 }
 

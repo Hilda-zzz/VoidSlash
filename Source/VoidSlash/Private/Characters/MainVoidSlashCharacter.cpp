@@ -10,3 +10,8 @@ void AMainVoidSlashCharacter::BeginPlay()
 
 	PlayerAnim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 }
+
+float AMainVoidSlashCharacter::GetDamage()
+{
+	return 10.0f;
+}

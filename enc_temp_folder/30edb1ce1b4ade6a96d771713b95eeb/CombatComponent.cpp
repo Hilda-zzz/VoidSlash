@@ -2,8 +2,7 @@
 
 
 #include "Combat/CombatComponent.h"
-#include "GameFramework/Character.h"
-#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
 {
@@ -20,7 +19,7 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CharacterRef = GetOwner<ACharacter>();
+	// ...
 	
 }
 
@@ -35,16 +34,5 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::ComboAttack()
 {
-	CharacterRef->PlayAnimMontage(AttackAnimations[ComboCounter]);
-
-	ComboCounter++;
-
-	int MaxCombo{ AttackAnimations.Num() };
-
-	ComboCounter = UKismetMathLibrary::Wrap(
-		ComboCounter,
-		-1,   // min is exclusivly
-		(MaxCombo-1) // max is inclusivly
-	);
 }
 

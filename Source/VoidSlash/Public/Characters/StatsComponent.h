@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TMap<TEnumAsByte<EStat>,float> Stats;
 
+	UFUNCTION(BlueprintCallable)
+	void ReduceHealth(float Amount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

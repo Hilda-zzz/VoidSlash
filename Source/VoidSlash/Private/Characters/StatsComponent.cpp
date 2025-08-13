@@ -2,6 +2,7 @@
 
 
 #include "Characters/StatsComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -13,6 +14,18 @@ UStatsComponent::UStatsComponent()
 	// ...
 }
 
+
+void UStatsComponent::ReduceHealth(float Amount)
+{
+	if (Stats[EStat::Health] <= 0) { return; }
+
+	Stats[EStat::Health] -= Amount;
+	Stats[EStat::Health] = UKismetMathLibrary::FClamp(
+		Stats[EStat::Health],
+		0,
+		Stats[EStat::MaxHealth]
+	);
+}
 
 // Called when the game starts
 void UStatsComponent::BeginPlay()

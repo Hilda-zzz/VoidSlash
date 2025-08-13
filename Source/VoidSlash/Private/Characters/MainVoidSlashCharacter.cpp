@@ -35,3 +35,8 @@ float AMainVoidSlashCharacter::GetDamage()
 {
 	return StatsComp->Stats[EStat::Strength];
 }
+
+bool AMainVoidSlashCharacter::HasEnoughStamina(float Cost)
+{
+	return StatsComp->Stats[EStat::Stamina] >= Cost;
+}

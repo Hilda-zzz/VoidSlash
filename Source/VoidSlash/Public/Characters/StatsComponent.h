@@ -13,6 +13,15 @@ class VOIDSLASH_API UStatsComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	double StaminaRegenRate{ 10.f };
+
+	UPROPERTY(VisibleAnywhere)
+	bool bCanRegen{ true };
+
+	UPROPERTY(EditAnywhere)
+	float StaminaDelayDuration{ 2.0f };
+
 public:	
 	// Sets default values for this component's properties
 	UStatsComponent();
@@ -22,6 +31,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReduceHealth(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReduceStamina(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void RegenStamina();
+
+	UFUNCTION()
+	void EnableRegen();
 
 protected:
 	// Called when the game starts
